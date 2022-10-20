@@ -32,9 +32,14 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Kinematically Reinterpreted Implementation Needing Godot Engine"
-run/main_scene="res://Scenes/SandboxScene.tscn"
+config/name="Touhou Fan Game Jam 9"
+run/main_scene="res://Scenes/Main.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+MusicController="*res://Scripts/Navigation/MusicController.gd"
+Global="*res://Scripts/Navigation/Global.gd"
 
 [display]
 

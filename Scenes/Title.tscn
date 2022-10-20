@@ -1,0 +1,65 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scripts/Navigation/Title.gd" type="Script" id=1]
+
+[sub_resource type="Animation" id=1]
+resource_name = "TitleTransition"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:margin_right")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ -720.0, 0.0 ]
+}
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Menu" type="VBoxContainer" parent="."]
+margin_left = 52.0
+margin_top = 67.0
+margin_right = 321.0
+margin_bottom = 396.0
+custom_constants/separation = 60
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Start" type="Button" parent="Menu"]
+margin_right = 269.0
+margin_bottom = 20.0
+text = "GAME START"
+flat = true
+
+[node name="Credits" type="Button" parent="Menu"]
+margin_top = 80.0
+margin_right = 269.0
+margin_bottom = 100.0
+text = "CREDITS"
+flat = true
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -720.0
+color = Color( 0.290196, 0.152941, 0.152941, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ColorRect"]
+anims/TitleTransition = SubResource( 1 )
+
+[connection signal="button_up" from="Menu/Start" to="." method="_on_Start_button_up"]
+[connection signal="animation_finished" from="ColorRect/AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

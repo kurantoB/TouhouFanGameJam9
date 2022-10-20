@@ -15,6 +15,7 @@ var scene
 export var unit_type : int
 
 var actions = {}
+var timer_actions = {}
 var unit_conditions = {}
 var facing : int = Constants.Direction.RIGHT
 var current_action_time_elapsed : float = 0
@@ -34,6 +35,8 @@ func _ready():
 	for condition_num in Constants.UNIT_TYPE_CONDITIONS[unit_type].keys():
 		set_unit_condition(condition_num, Constants.UNIT_TYPE_CONDITIONS[unit_type][condition_num])
 	target_move_speed = Constants.UNIT_TYPE_MOVE_SPEEDS[unit_type]
+	for timer_action_num in Constants.ACTION_TIMERS[unit_type].keys():
+		timer_actions[timer_action_num] = 0
 
 func init_unit_w_scene(scene):
 	self.scene = scene
@@ -41,6 +44,25 @@ func init_unit_w_scene(scene):
 func set_action(action : int):
 	assert(action in Constants.UNIT_TYPE_ACTIONS[unit_type])
 	actions[action] = true
+
+func set_timer_action(action : int):
+	assert(action in Constants.UNIT_TYPE_ACTIONS[unit_type])
+	assert(action in Constants.ACTION_TIMERS[unit_type].keys())
+	timer_actions[action] = Constants.ACTION_TIMERS[unit_type][action]
+
+func reset_timer_action(action : int):
+	assert(action in Constants.UNIT_TYPE_ACTIONS[unit_type])
+	assert(action in Constants.ACTION_TIMERS[unit_type].keys())
+	timer_actions[action] = 0
+
+func do_with_timeout(action : int):
+	if timer_actions[action] == 0:
+		set_action(action)
+		set_timer_action(action)
+
+func advance_timers(delta):
+	for timer_action_num in Constants.ACTION_TIMERS[unit_type].keys():
+		timer_actions[timer_action_num] = move_toward(timer_actions[timer_action_num], 0, delta)
 
 func set_unit_condition(condition_type : int, condition):
 	assert(condition_type in Constants.UNIT_TYPE_CONDITIONS[unit_type].keys())
@@ -59,6 +81,7 @@ func process_unit(delta):
 	execute_actions(delta)
 	handle_idle()
 	handle_moving_status(delta)
+	advance_timers(delta)
 
 func reset_current_action():
 	# process CURRENT_ACTION
@@ -112,6 +135,7 @@ func move():
 	if (get_current_action() == Constants.UnitCurrentAction.IDLE
 	and unit_conditions[Constants.UnitCondition.IS_ON_GROUND]):
 		set_sprite("Walk")
+	target_move_speed = Constants.UNIT_TYPE_MOVE_SPEEDS[unit_type]
 
 func handle_moving_status(delta):
 	# what we have: facing, current speed, move status, grounded

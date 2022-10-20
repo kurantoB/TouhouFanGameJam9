@@ -87,13 +87,31 @@ func handle_player_input():
 			input_dir = Constants.Direction.LEFT
 		else:
 			input_dir = Constants.Direction.RIGHT
-		# if action-idle or action-jumping
-		if (player.get_current_action() == Constants.UnitCurrentAction.IDLE
-		or player.get_current_action() == Constants.UnitCurrentAction.JUMPING):
-			# set move
-			player.set_action(Constants.ActionType.MOVE)
-			# set facing
-			player.facing = input_dir
+		if player.unit_conditions[Constants.UnitCondition.IS_ON_GROUND]:
+			if player.unit_conditions[Constants.UnitCondition.MOVING_STATUS] == Constants.UnitMovingStatus.IDLE:
+				if player.timer_actions[Constants.ActionType.DASH] > 0 and player.dash_facing == input_dir:
+					player.set_action(Constants.ActionType.DASH)
+				else:
+					player.set_action(Constants.ActionType.MOVE)
+			elif player.unit_conditions[Constants.UnitCondition.MOVING_STATUS] == Constants.UnitMovingStatus.MOVING:
+				player.set_action(Constants.ActionType.MOVE)
+			else:
+				if player.facing == input_dir:
+					player.set_action(Constants.ActionType.DASH)
+				else:
+					player.set_action(Constants.ActionType.MOVE)
+			player.dash_facing = input_dir
+			player.set_timer_action(Constants.ActionType.DASH)
+		else:
+			if (player.unit_conditions[Constants.UnitCondition.MOVING_STATUS] == Constants.UnitMovingStatus.DASHING
+			and input_dir == player.facing
+			and player.h_speed != 0):
+				player.set_action(Constants.ActionType.DASH)
+			else:
+				player.set_action(Constants.ActionType.MOVE)
+				player.reset_timer_action(Constants.ActionType.DASH)
+		# set facing
+		player.facing = input_dir
 	
 	if input_table[Constants.PlayerInput.GBA_A][I_T_PRESSED]:
 		if (player.get_current_action() == Constants.UnitCurrentAction.JUMPING
@@ -108,5 +126,5 @@ func reset_player_current_action():
 		if input_table[Constants.PlayerInput.GBA_A][I_T_JUST_RELEASED]:
 			player.set_current_action(Constants.UnitCurrentAction.IDLE)
 	# process MOVING_STATUS
-	if not player.actions[Constants.ActionType.MOVE]:
+	if not player.actions[Constants.ActionType.MOVE] and not player.actions[Constants.ActionType.DASH]:
 		player.set_unit_condition(Constants.UnitCondition.MOVING_STATUS, Constants.UnitMovingStatus.IDLE)

@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
+[ext_resource path="res://Graphics/Animations/PlayerDash.tres" type="SpriteFrames" id=1]
 [ext_resource path="res://Graphics/Units/Player.png" type="Texture" id=2]
 [ext_resource path="res://Graphics/Units/PlayerJump2.png" type="Texture" id=3]
 [ext_resource path="res://Graphics/Units/PlayerJump1.png" type="Texture" id=4]
@@ -25,4 +26,9 @@ offset = Vector2( 0, -15 )
 [node name="Jump2" type="Sprite" parent="."]
 visible = false
 texture = ExtResource( 3 )
+offset = Vector2( 0, -15 )
+
+[node name="Dash" type="AnimatedSprite" parent="."]
+visible = false
+frames = ExtResource( 1 )
 offset = Vector2( 0, -15 )

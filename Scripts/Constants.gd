@@ -5,6 +5,7 @@ enum UnitType {
 enum ActionType {
 	JUMP,
 	MOVE,
+	DASH,
 }
 
 enum UnitCondition {
@@ -21,6 +22,7 @@ enum UnitCurrentAction {
 enum UnitMovingStatus {
 	IDLE,
 	MOVING,
+	DASHING,
 }
 
 enum PlayerInput {
@@ -56,7 +58,15 @@ const UNIT_TYPE_ACTIONS = {
 	UnitType.PLAYER: [
 		ActionType.JUMP,
 		ActionType.MOVE,
+		ActionType.DASH,
 	],
+}
+
+# in seconds
+const ACTION_TIMERS = {
+	UnitType.PLAYER: {
+		ActionType.DASH: 0.25
+	}
 }
 
 const UNIT_TYPE_CURRENT_ACTIONS = {
@@ -121,12 +131,15 @@ const UNIT_SPRITES = {
 		"Idle": [false, ["Idle"]],
 		"Walk": [true, ["Walk"]],
 		"Jump": [false, ["Jump1", "Jump2"]],
+		"Dash": [true, ["Dash"]],
 	}
 }
 
 const UNIT_TYPE_MOVE_SPEEDS = {
 	UnitType.PLAYER: 6
 }
+
+const DASH_SPEED = 10
 
 const UNIT_TYPE_JUMP_SPEEDS = {
 	UnitType.PLAYER: 5
