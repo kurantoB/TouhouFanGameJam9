@@ -1,6 +1,8 @@
 # Handles unit-environment iteraction
 extends Object
 
+class_name StageEnvironment
+
 const GameUtils = preload("res://Scripts/GameUtils.gd")
 const Constants = preload("res://Scripts/Constants.gd")
 const GameScene = preload("res://Scripts/GameScene.gd")
@@ -13,18 +15,41 @@ var bottom_right_colliders = []
 var bottom_left_colliders = []
 var top_left_colliders = []
 
+var breakable_walls = [] # [[grid_x, grid_y, class], ...]
+
 func _init(the_scene : GameScene):
 	scene = the_scene
-	var stage : TileMap = scene.get_node("Stage")
-	init_stage_grid(stage)
-	stage.scale.x = Constants.SCALE_FACTOR
-	stage.scale.y = Constants.SCALE_FACTOR
+	
+	load_or_reload_stage_grid()
+	
 	var player = scene.get_node("Player")
 	init_player(player)
 	player.position.x = player.position.x * Constants.SCALE_FACTOR
 	player.position.y = player.position.y * Constants.SCALE_FACTOR
 	player.scale.x = Constants.SCALE_FACTOR
 	player.scale.y = Constants.SCALE_FACTOR
+
+func load_or_reload_stage_grid():
+	breakable_walls.clear()
+	top_right_colliders.clear()
+	bottom_right_colliders.clear()
+	bottom_left_colliders.clear()
+	top_left_colliders.clear()
+	
+	var stage = scene.get_node("Stage")
+	init_stage_grid(stage)
+	stage.scale.x = Constants.SCALE_FACTOR
+	stage.scale.y = Constants.SCALE_FACTOR
+	
+	var stage_wall_class_1 = scene.get_node("StageWall1")
+	init_stage_wall_grid(stage_wall_class_1, 1)
+	stage_wall_class_1.scale.x = Constants.SCALE_FACTOR
+	stage_wall_class_1.scale.y = Constants.SCALE_FACTOR
+	
+	var stage_wall_class_2 = scene.get_node("StageWall2")
+	init_stage_wall_grid(stage_wall_class_2, 2)
+	stage_wall_class_2.scale.x = Constants.SCALE_FACTOR
+	stage_wall_class_2.scale.y = Constants.SCALE_FACTOR
 
 func init_player(player : Unit):
 	player.pos = Vector2(player.position.x / Constants.GRID_SIZE, -1 * player.position.y / Constants.GRID_SIZE)
@@ -169,6 +194,23 @@ func init_stage_grid(tilemap : TileMap):
 			Constants.MapElemType.LEDGE:
 				insert_grid_collider(stage_x, stage_y, Constants.Direction.UP, 1)
 
+func init_stage_wall_grid(tilemap : TileMap, wall_class : int):
+	# map elem type is always square
+	for map_elem in tilemap.get_used_cells():
+		var stage_x = floor(tilemap.map_to_world(map_elem).x / Constants.GRID_SIZE)
+		var stage_y = floor(-1 * tilemap.map_to_world(map_elem).y / Constants.GRID_SIZE) - 1
+		var is_broken : bool = false
+		for broken_wall in Global.broken_walls[scene.level_name]:
+			if broken_wall[0] == stage_x and broken_wall[1] == stage_y:
+				# wall is broken
+				tilemap.set_cell(map_elem.x, map_elem.y, -1)
+				is_broken = true
+		if not is_broken:
+			breakable_walls.append([stage_x, stage_y, wall_class])
+			insert_grid_collider(stage_x, stage_y, Constants.Direction.UP, 1)
+			insert_grid_collider(stage_x, stage_y, Constants.Direction.DOWN, 1)
+			insert_grid_collider(stage_x, stage_y, Constants.Direction.LEFT, 1)
+			insert_grid_collider(stage_x, stage_y, Constants.Direction.RIGHT, 1)
 
 func insert_grid_collider(stage_x, stage_y, direction : int, fractional_height : float):
 	var check_colliders = []
@@ -368,3 +410,17 @@ func interact_post(unit : Unit):
 	# need to reground unit in case it ended up somewhere underneath ground level
 	if unit.unit_conditions[Constants.UnitCondition.IS_ON_GROUND]:
 		ground_placement(unit)
+
+func attempt_break(pos_x, pos_y, facing, break_class):
+	var facing_factor = 1
+	if facing == Constants.Direction.LEFT:
+		facing_factor = -1
+	var should_reload_stage_grid = false
+	for breakable_wall in breakable_walls:
+		if (breakable_wall[0] == floor(pos_x) + facing_factor
+		and (breakable_wall[1] == floor(pos_y) or breakable_wall[1] == floor(pos_y + 1))
+		and breakable_wall[2] <= break_class):
+			Global.broken_walls[scene.level_name].append([breakable_wall[0], breakable_wall[1]])
+			should_reload_stage_grid = true
+	if should_reload_stage_grid:
+		load_or_reload_stage_grid()

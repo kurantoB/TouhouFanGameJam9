@@ -9,6 +9,7 @@ extends Node
 class_name GameScene
 
 export var tile_set_name: String
+export var level_name: String
 const Constants = preload("res://Scripts/Constants.gd")
 const Unit = preload("res://Scripts/Unit.gd")
 
@@ -119,6 +120,9 @@ func handle_player_input():
 		and player.unit_conditions[Constants.UnitCondition.IS_ON_GROUND]
 		and input_table[Constants.PlayerInput.GBA_A][I_T_JUST_PRESSED])):
 			player.set_action(Constants.ActionType.JUMP)
+	
+	if input_table[Constants.PlayerInput.GBA_B][I_T_JUST_PRESSED]:
+		player.set_action(Constants.ActionType.BREAK)
 
 func reset_player_current_action():
 	# process CURRENT_ACTION

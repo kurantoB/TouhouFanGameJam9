@@ -4,6 +4,7 @@ extends Unit
 class_name Player
 
 var dash_facing : int
+var break_class : int = 1
 
 
 func execute_actions(delta):
@@ -15,6 +16,8 @@ func execute_actions(delta):
 			# handle custom actions
 			Constants.ActionType.DASH:
 				dash()
+			Constants.ActionType.BREAK:
+				do_break()
 			_:
 				pass
 
@@ -23,6 +26,9 @@ func dash():
 	target_move_speed = Constants.DASH_SPEED
 	if unit_conditions[Constants.UnitCondition.IS_ON_GROUND]:
 		set_sprite("Dash")
+
+func do_break():
+	scene.stage_env.attempt_break(pos.x, pos.y, facing, break_class)
 
 func handle_input(delta):
 	scene.handle_player_input()

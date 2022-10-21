@@ -6,6 +6,7 @@ enum ActionType {
 	JUMP,
 	MOVE,
 	DASH,
+	BREAK,
 }
 
 enum UnitCondition {
@@ -59,6 +60,7 @@ const UNIT_TYPE_ACTIONS = {
 		ActionType.JUMP,
 		ActionType.MOVE,
 		ActionType.DASH,
+		ActionType.BREAK,
 	],
 }
 
