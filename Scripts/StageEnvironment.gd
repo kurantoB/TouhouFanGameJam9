@@ -5,29 +5,30 @@ class_name StageEnvironment
 
 const GameUtils = preload("res://Scripts/GameUtils.gd")
 const Constants = preload("res://Scripts/Constants.gd")
-const GameScene = preload("res://Scripts/GameScene.gd")
+# const GameScene = preload("res://Scripts/GameScene.gd")
 const Unit = preload("res://Scripts/Unit.gd")
 
-var scene : GameScene
+# var scene : GameScene
+var scene
 
 var top_right_colliders = []
 var bottom_right_colliders = []
 var bottom_left_colliders = []
 var top_left_colliders = []
+var stage_hazards = [] # [[bounds, bound_direction], ...]
 
 var breakable_walls = [] # [[grid_x, grid_y, class], ...]
 
-func _init(the_scene : GameScene):
+# func _init(the_scene : GameScene):
+func _init(the_scene):
 	scene = the_scene
-	
 	load_or_reload_stage_grid()
-	
-	var player = scene.get_node("Player")
-	init_player(player)
-	player.position.x = player.position.x * Constants.SCALE_FACTOR
-	player.position.y = player.position.y * Constants.SCALE_FACTOR
-	player.scale.x = Constants.SCALE_FACTOR
-	player.scale.y = Constants.SCALE_FACTOR
+	for unit in scene.units:
+		unit.pos = Vector2(unit.position.x / Constants.GRID_SIZE, -1 * unit.position.y / Constants.GRID_SIZE)
+		unit.position.x = unit.position.x * Constants.SCALE_FACTOR
+		unit.position.y = unit.position.y * Constants.SCALE_FACTOR
+		unit.scale.x = Constants.SCALE_FACTOR
+		unit.scale.y = Constants.SCALE_FACTOR
 
 func load_or_reload_stage_grid():
 	breakable_walls.clear()
@@ -51,10 +52,24 @@ func load_or_reload_stage_grid():
 	stage_wall_class_2.scale.x = Constants.SCALE_FACTOR
 	stage_wall_class_2.scale.y = Constants.SCALE_FACTOR
 
-func init_player(player : Unit):
-	player.pos = Vector2(player.position.x / Constants.GRID_SIZE, -1 * player.position.y / Constants.GRID_SIZE)
-
 func interact(unit : Unit, delta):
+	# do hazards
+	var unit_pos_y_upper_bound_check = unit.hit_box[Constants.HIT_BOX_BOUND.UPPER_BOUND]
+	for stage_hazard in stage_hazards:
+		if not ((unit.pos.y + unit.hit_box[Constants.HIT_BOX_BOUND.LOWER_BOUND] > stage_hazard[0][Constants.HIT_BOX_BOUND.UPPER_BOUND])
+		or (unit.pos.y + unit_pos_y_upper_bound_check < stage_hazard[0][Constants.HIT_BOX_BOUND.LOWER_BOUND])
+		or (unit.pos.x + unit.hit_box[Constants.HIT_BOX_BOUND.LEFT_BOUND] > stage_hazard[0][Constants.HIT_BOX_BOUND.RIGHT_BOUND])
+		or (unit.pos.x + unit.hit_box[Constants.HIT_BOX_BOUND.RIGHT_BOUND] < stage_hazard[0][Constants.HIT_BOX_BOUND.LEFT_BOUND])):
+			var dir: int
+			if stage_hazard[1] != -1:
+				dir = stage_hazard[1]
+			elif (stage_hazard[0][Constants.HIT_BOX_BOUND.LEFT_BOUND] + stage_hazard[0][Constants.HIT_BOX_BOUND.RIGHT_BOUND]) / 2 < unit.pos.x:
+				dir = Constants.Direction.LEFT
+			else:
+				dir = Constants.Direction.RIGHT
+			unit.hit(dir)
+			break
+	
 	# grounded
 	if unit.unit_conditions[Constants.UnitCondition.IS_ON_GROUND]:
 		interact_grounded(unit, delta)
@@ -121,7 +136,8 @@ func init_stage_grid(tilemap : TileMap):
 			Constants.MapElemType.SMALL_SLOPE_LEFT_2,
 			Constants.MapElemType.SMALL_SLOPE_RIGHT_1,
 			Constants.MapElemType.SMALL_SLOPE_RIGHT_2,
-			Constants.MapElemType.LEDGE]:
+			Constants.MapElemType.LEDGE,
+			Constants.MapElemType.HAZARD]:
 			for test_cell_v in Constants.TILE_SET_MAP_ELEMS[scene.tile_set_name][test_map_elem_type]:
 				if test_cell_v == cellv:
 					map_elem_type = test_map_elem_type
@@ -193,6 +209,8 @@ func init_stage_grid(tilemap : TileMap):
 				insert_grid_collider(stage_x, stage_y, Constants.Direction.DOWN, 1)
 			Constants.MapElemType.LEDGE:
 				insert_grid_collider(stage_x, stage_y, Constants.Direction.UP, 1)
+			Constants.MapElemType.HAZARD:
+				insert_stage_hazard(stage_x, stage_y, cellv)
 
 func init_stage_wall_grid(tilemap : TileMap, wall_class : int):
 	# map elem type is always square
@@ -251,6 +269,13 @@ func try_insert_collider(check_colliders, insert_colliders, point_a : Vector2, p
 	if not found_existing:
 		for i in range(len(insert_colliders)):
 			insert_colliders[i].append([point_a, point_b])
+
+func insert_stage_hazard(stage_x, stage_y, cellv):
+	stage_hazards.append([{
+		Constants.HIT_BOX_BOUND.UPPER_BOUND: stage_y + 1,
+		Constants.HIT_BOX_BOUND.LOWER_BOUND: stage_y,
+		Constants.HIT_BOX_BOUND.LEFT_BOUND: stage_x,
+		Constants.HIT_BOX_BOUND.RIGHT_BOUND: stage_x + 1}, Constants.TILE_SET_HAZARD_REF_X[scene.tile_set_name][cellv]])
 
 func ground_movement_interaction(unit : Unit, delta):
 	var has_ground_collision = false
@@ -340,6 +365,8 @@ func check_collision(unit : Unit, collider, collision_direction, delta):
 				collider_set_pos_x = collider_set_pos_x - Constants.QUANTUM_DIST
 			var x_dist_to_translate = collider_set_pos_x - (unit.pos.x + unit_env_collider[0].x)
 			unit.pos.x = unit.pos.x + x_dist_to_translate
+			if collider[0].x == collider[1].x:
+				unit.wall_collision() # subclass implementation
 
 # handle collision with ground if any
 func check_ground_collision(unit : Unit, collider, collision_point : Vector2, unit_env_collider, delta):
@@ -422,5 +449,6 @@ func attempt_break(pos_x, pos_y, facing, break_class):
 		and breakable_wall[2] <= break_class):
 			Global.broken_walls[scene.level_name].append([breakable_wall[0], breakable_wall[1]])
 			should_reload_stage_grid = true
+			scene.wall_broken(breakable_wall[0], breakable_wall[1], breakable_wall[2])
 	if should_reload_stage_grid:
 		load_or_reload_stage_grid()

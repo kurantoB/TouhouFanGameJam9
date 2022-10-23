@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Units/VengefulSpiritMove.gd" type="Script" id=1]
+[ext_resource path="res://Units/VengefulSpirit.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Units/Youmu.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scripts/Units/Youmu.gd" type="Script" id=4]
+
+[node name="Node" type="Node"]
+
+[node name="VengefulSpirit" parent="." instance=ExtResource( 2 )]
+position = Vector2( 100, -20 )
+script = ExtResource( 1 )
+unit_type = 1
+tick_duration = 0.5
+action_sequence_map = {
+[ [ 1 ], [ 1.0 ] ]: 1
+}
+action_duration_map = {
+1: 1
+}
+
+[node name="Youmu" parent="." instance=ExtResource( 3 )]
+position = Vector2( 140, -20 )
+script = ExtResource( 4 )
+unit_type = 2
+tick_duration = 0.6
+action_sequence_map = {
+[ [ 1 ], [ 0.0 ] ]: 1,
+[ [ 2, 0, 1 ], [ 0.0, 0.1, 0.6 ] ]: 2,
+[ [ 1, 0, 1 ], [ 0.0, 0.1, 1.0 ] ]: 1
+}
+action_duration_map = {
+0: 0.5,
+1: 1.0,
+2: 0.6
+}

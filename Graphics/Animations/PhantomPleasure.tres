@@ -1,0 +1,13 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=2]
+
+[ext_resource path="res://Graphics/Phantom/Pleasure2.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/Phantom/Pleasure0.png" type="Texture" id=2]
+[ext_resource path="res://Graphics/Phantom/Pleasure1.png" type="Texture" id=3]
+
+[resource]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "default",
+"speed": 8.0
+} ]

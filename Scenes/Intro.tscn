@@ -1,0 +1,246 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Scripts/Navigation/Title.gd" type="Script" id=1]
+[ext_resource path="res://Font/MessageText.tres" type="DynamicFont" id=5]
+[ext_resource path="res://Scripts/Navigation/MessageControl.gd" type="Script" id=6]
+[ext_resource path="res://Graphics/UI/MessageBox.png" type="Texture" id=11]
+
+[node name="Intro" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_clip_content = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MessageBox" type="TextureRect" parent="CanvasLayer/HUD"]
+margin_top = 384.0
+margin_right = 720.0
+margin_bottom = 480.0
+texture = ExtResource( 11 )
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+starting_sequence = "Intro"
+
+[node name="Control" type="Control" parent="CanvasLayer/HUD/MessageBox"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 24.0
+margin_top = 12.0
+margin_right = -24.0
+margin_bottom = -12.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Intro" type="Control" parent="CanvasLayer/HUD/MessageBox/Control"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "- Press [Z] to continue -"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Somewhere in Hakugyokurou…"
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : So this is the ghost hag's famous Soul Torch. Thought it'd be bigger."
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : I heard she uses it to attract wandering spirits and guide them to eternal rest or whatever."
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : But how do you turn this on? Maybe by shaking it hard enough?"
+
+[node name="RichTextLabel6" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "..."
+
+[node name="RichTextLabel7" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : Oh! Nevermind, it works already!"
+
+[node name="RichTextLabel8" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : Hehe… My plan is finally in motion…"
+
+[node name="RichTextLabel9" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : Step one: steal the Soul Torch."
+
+[node name="RichTextLabel10" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : Step two: run around the Netherworld and gather lots of ghosts."
+
+[node name="RichTextLabel11" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : Step three: throw the biggest surprise party ever at the Hakurei Shrine!"
+
+[node name="RichTextLabel12" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : All guests are entitled to some food and booze. But since ghosts can't eat nor drink…"
+
+[node name="RichTextLabel13" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Suika : I'll get as much of everything as I want! This is gonna be the feast of the century!"
+
+[node name="RichTextLabel14" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "..."
+
+[node name="RichTextLabel16" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : Okay… House cleaning, done. Gardening, done."
+
+[node name="RichTextLabel17" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : It's almost time for Lady Yuyuko's daily shoulder massage. I have to make tea first…"
+
+[node name="RichTextLabel18" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "..."
+
+[node name="RichTextLabel19" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : W-w-what?! Where is the Soul Torch?! It was right there this morning!"
+
+[node name="RichTextLabel20" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : Lady Yuyuko didn't inform me she wanted to use it. It can mean only one thing…"
+
+[node name="RichTextLabel21" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : Someone must have stolen it! But who? And why?"
+
+[node name="RichTextLabel22" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : Hold on. That smell doesn't belong here."
+
+[node name="RichTextLabel23" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : It reminds of…"
+
+[node name="RichTextLabel24" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : That insolent oni."
+
+[node name="RichTextLabel25" type="RichTextLabel" parent="CanvasLayer/HUD/MessageBox/Control/Intro"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/normal_font = ExtResource( 5 )
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+text = "Youmu : Lady Yuyuko didn't notice anything. I must catch her before it's too late."

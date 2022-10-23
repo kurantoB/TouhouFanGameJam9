@@ -1,34 +1,51 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://Graphics/Animations/PlayerDash.tres" type="SpriteFrames" id=1]
-[ext_resource path="res://Graphics/Units/Player.png" type="Texture" id=2]
-[ext_resource path="res://Graphics/Units/PlayerJump2.png" type="Texture" id=3]
-[ext_resource path="res://Graphics/Units/PlayerJump1.png" type="Texture" id=4]
-[ext_resource path="res://Graphics/Animations/PlayerWalk.tres" type="SpriteFrames" id=5]
+[ext_resource path="res://Graphics/Units/Suika/Recoil.png" type="Texture" id=1]
+[ext_resource path="res://Graphics/Animations/SuikaIdle.tres" type="SpriteFrames" id=2]
+[ext_resource path="res://Graphics/Animations/SuikaWalk.tres" type="SpriteFrames" id=3]
+[ext_resource path="res://Graphics/Animations/SuikaDash.tres" type="SpriteFrames" id=4]
+[ext_resource path="res://Graphics/Animations/SuikaBreak.tres" type="SpriteFrames" id=5]
+[ext_resource path="res://Graphics/Animations/SuikaDrink.tres" type="SpriteFrames" id=6]
+[ext_resource path="res://Graphics/Units/Suika/Jump2.png" type="Texture" id=7]
+[ext_resource path="res://Graphics/Units/Suika/Jump1.png" type="Texture" id=8]
 
 [node name="Player" type="Node2D"]
 
-[node name="Idle" type="Sprite" parent="."]
-visible = false
-texture = ExtResource( 2 )
-offset = Vector2( 0, -15 )
+[node name="Idle" type="AnimatedSprite" parent="."]
+frames = ExtResource( 2 )
+offset = Vector2( 0, -12 )
 
 [node name="Walk" type="AnimatedSprite" parent="."]
 visible = false
-frames = ExtResource( 5 )
-offset = Vector2( 0, -15 )
+frames = ExtResource( 3 )
+offset = Vector2( 0, -12 )
 
 [node name="Jump1" type="Sprite" parent="."]
 visible = false
-texture = ExtResource( 4 )
-offset = Vector2( 0, -15 )
+texture = ExtResource( 8 )
+offset = Vector2( 0, -12 )
 
 [node name="Jump2" type="Sprite" parent="."]
 visible = false
-texture = ExtResource( 3 )
-offset = Vector2( 0, -15 )
+texture = ExtResource( 7 )
+offset = Vector2( 0, -12 )
 
 [node name="Dash" type="AnimatedSprite" parent="."]
 visible = false
-frames = ExtResource( 1 )
-offset = Vector2( 0, -15 )
+frames = ExtResource( 4 )
+offset = Vector2( 0, -12 )
+
+[node name="Break" type="AnimatedSprite" parent="."]
+visible = false
+frames = ExtResource( 5 )
+offset = Vector2( 0, -12 )
+
+[node name="Drink" type="AnimatedSprite" parent="."]
+visible = false
+frames = ExtResource( 6 )
+offset = Vector2( 0, -12 )
+
+[node name="Recoil" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 1 )
+offset = Vector2( 0, -12 )

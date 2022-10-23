@@ -14,11 +14,13 @@ var scene
 # position
 export var unit_type : int
 
+var hit_box
 var actions = {}
 var timer_actions = {}
 var unit_conditions = {}
 var facing : int = Constants.Direction.RIGHT
 var current_action_time_elapsed : float = 0
+var unit_condition_timers = {}
 
 var pos : Vector2
 var h_speed : float = 0
@@ -28,15 +30,26 @@ var last_contacted_ground_collider : Array
 
 var current_sprite : Node2D
 
+var time_elapsed : float
+var is_flash : bool = false
+var flash_start_timestamp : float
+
 # Called when the node enters the scene tree for the first time
 func _ready():
 	for action_num in Constants.UNIT_TYPE_ACTIONS[unit_type]:
 		actions[action_num] = false
 	for condition_num in Constants.UNIT_TYPE_CONDITIONS[unit_type].keys():
 		set_unit_condition(condition_num, Constants.UNIT_TYPE_CONDITIONS[unit_type][condition_num])
+	for condition_num in Constants.UNIT_CONDITION_TIMERS[unit_type].keys():
+		unit_condition_timers[condition_num] = 0
 	target_move_speed = Constants.UNIT_TYPE_MOVE_SPEEDS[unit_type]
 	for timer_action_num in Constants.ACTION_TIMERS[unit_type].keys():
 		timer_actions[timer_action_num] = 0
+	hit_box = Constants.UNIT_HIT_BOXES[unit_type]
+	scale.x = Constants.SCALE_FACTOR
+	scale.y = Constants.SCALE_FACTOR
+	for child in get_children():
+		child.visible = false
 
 func init_unit_w_scene(scene):
 	self.scene = scene
@@ -63,10 +76,25 @@ func do_with_timeout(action : int):
 func advance_timers(delta):
 	for timer_action_num in Constants.ACTION_TIMERS[unit_type].keys():
 		timer_actions[timer_action_num] = move_toward(timer_actions[timer_action_num], 0, delta)
+	for condition_num in Constants.UNIT_CONDITION_TIMERS[unit_type].keys():
+		unit_condition_timers[condition_num] = move_toward(unit_condition_timers[condition_num], 0, delta)
+		if unit_condition_timers[condition_num] == 0:
+			set_unit_condition(condition_num, Constants.UNIT_CONDITION_TIMERS[unit_type][condition_num][2])
 
 func set_unit_condition(condition_type : int, condition):
 	assert(condition_type in Constants.UNIT_TYPE_CONDITIONS[unit_type].keys())
 	unit_conditions[condition_type] = condition
+
+func set_unit_condition_with_timer(condition_type : int):
+	assert(condition_type in Constants.UNIT_CONDITION_TIMERS[unit_type].keys())
+	set_unit_condition(condition_type, Constants.UNIT_CONDITION_TIMERS[unit_type][condition_type][1])
+	unit_condition_timers[condition_type] = Constants.UNIT_CONDITION_TIMERS[unit_type][condition_type][0]
+
+func get_condition(condition_num : int, default):
+	if condition_num in Constants.UNIT_TYPE_CONDITIONS[unit_type].keys():
+		return unit_conditions[condition_num]
+	else:
+		return default
 
 func is_current_action_timer_done(current_action : int):
 	assert(current_action in Constants.CURRENT_ACTION_TIMERS[unit_type].keys())
@@ -76,21 +104,26 @@ func reset_actions():
 	for action_num in Constants.UNIT_TYPE_ACTIONS[unit_type]:
 		actions[action_num] = false
 
-func process_unit(delta):
+func hit_check():
+	# implemented in subclass
+	pass
+
+func process_unit(delta, time_elapsed : float):
 	current_action_time_elapsed += delta
 	execute_actions(delta)
 	handle_idle()
 	handle_moving_status(delta)
 	advance_timers(delta)
+	self.time_elapsed = time_elapsed
 
 func reset_current_action():
 	# process CURRENT_ACTION
-	if get_current_action() == scene.Constants.UnitCurrentAction.JUMPING:
-		if not actions[scene.Constants.ActionType.JUMP]:
-			set_current_action(scene.Constants.UnitCurrentAction.IDLE)
+	if get_current_action() == Constants.UnitCurrentAction.JUMPING:
+		if not actions[Constants.ActionType.JUMP]:
+			set_current_action(Constants.UnitCurrentAction.IDLE)
 	# process MOVING_STATUS
-	if not actions[scene.Constants.ActionType.MOVE]:
-		set_unit_condition(scene.Constants.UnitCondition.MOVING_STATUS, scene.Constants.UnitMovingStatus.IDLE)
+	if not actions[Constants.ActionType.MOVE]:
+		set_unit_condition(Constants.UnitCondition.MOVING_STATUS, Constants.UnitMovingStatus.IDLE)
 
 func handle_input(delta):
 	# implemented in subclass
@@ -215,12 +248,20 @@ func set_sprite(sprite_class : String, index : int = 0):
 	if true_index > len(node_list) - 1:
 		true_index = 0
 	var new_sprite : Node2D = get_node(node_list[true_index])
+	if (is_flash):
+		if int((time_elapsed - flash_start_timestamp) / Constants.FLASH_CYCLE) % 2 == 1:
+			new_sprite.set_modulate(Color(1.5, 1.5, 1.5))
+		else:
+			new_sprite.set_modulate(Color(1, 1, 1))
+	else:
+		new_sprite.set_modulate(Color(1, 1, 1))
 	if current_sprite == null or current_sprite != new_sprite:
 		if current_sprite != null:
 			current_sprite.visible = false
 		current_sprite = new_sprite
 		current_sprite.visible = true
 		if (Constants.UNIT_SPRITES[unit_type][sprite_class][0]):
+			current_sprite.set_frame(0)
 			current_sprite.play()
 	if facing == Constants.Direction.LEFT:
 		current_sprite.scale.x = -1
@@ -232,3 +273,9 @@ func react(delta):
 	pos.y = pos.y + v_speed * delta
 	position.x = pos.x * Constants.GRID_SIZE * Constants.SCALE_FACTOR
 	position.y = -1 * pos.y * Constants.GRID_SIZE * Constants.SCALE_FACTOR
+
+func hit(dir : int):
+	pass
+
+func wall_collision():
+	pass
