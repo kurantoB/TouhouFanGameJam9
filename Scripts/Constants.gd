@@ -166,7 +166,7 @@ const CURRENT_ACTION_TIMERS = {
 const UNIT_CONDITION_TIMERS = {
 	# condition type: [duration, on value, off value]
 	UnitType.PLAYER: {
-		UnitCondition.IS_INVINCIBLE: [2.5, true, false],
+		UnitCondition.IS_INVINCIBLE: [6, true, false],
 	},
 	UnitType.VENGEFUL_SPIRIT: {},
 	UnitType.YOUMU: {},
@@ -280,21 +280,21 @@ const UNIT_SPRITES = {
 }
 
 const UNIT_TYPE_MOVE_SPEEDS = {
-	UnitType.PLAYER: 6,
-	UnitType.VENGEFUL_SPIRIT: 3,
-	UnitType.YOUMU: 5,
+	UnitType.PLAYER: 5,
+	UnitType.VENGEFUL_SPIRIT: 1.5,
+	UnitType.YOUMU: 3,
 }
 
 const UNIT_TYPE_DASH_SPEEDS = {
-	UnitType.PLAYER: 10,
+	UnitType.PLAYER: 8,
 	UnitType.VENGEFUL_SPIRIT: 0,
-	UnitType.YOUMU: 9,
+	UnitType.YOUMU: 6,
 }
 
 const UNIT_TYPE_JUMP_SPEEDS = {
-	UnitType.PLAYER: 5,
-	UnitType.VENGEFUL_SPIRIT: 5,
-	UnitType.YOUMU: 5,
+	UnitType.PLAYER: 7,
+	UnitType.VENGEFUL_SPIRIT: 8,
+	UnitType.YOUMU: 7,
 }
 
 const SCALE_FACTOR = 3
@@ -306,7 +306,7 @@ const RECOIL_PUSHBACK = 10
 const QUANTUM_DIST = 0.001
 
 # Cosmetics
-const FLASH_CYCLE = 0.25
+const FLASH_CYCLE = 0.16
 
 # Misc
-const PHANTOM_SPAWN_COOLDOWN = 40
+const PHANTOM_SPAWN_COOLDOWN = 15

@@ -49,7 +49,6 @@ func show_message():
 			get_tree().change_scene_to(Global.main_scene)
 		return
 	if current_sequence.name == "Yuyuko":
-		print("Attempting to get child " + str(sequence_num) + " of " + npc_control)
 		current_message = current_sequence.get_node(npc_control).get_child(sequence_num)
 	else:
 		current_message = current_sequence.get_child(sequence_num)

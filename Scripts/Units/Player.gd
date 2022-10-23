@@ -23,8 +23,8 @@ var levels = {
 	Constants.EMOTION.SORROW: 0,
 	Constants.EMOTION.PLEASURE: 0,
 }
-const LEVEL1_COUNT = 20
-const LEVEL2_COUNT = 50
+const LEVEL1_COUNT = 10
+const LEVEL2_COUNT = 30
 
 
 func gain_phantom(emotion : int):
@@ -33,7 +33,7 @@ func gain_phantom(emotion : int):
 	refresh_levels();
 
 func lose_phantoms():
-	var loss = ceil(phantom_count / 4)
+	var loss = ceil(phantom_count / 6)
 	for i in range(loss):
 		var viable_emotions = []
 		if phantom_inventory[Constants.EMOTION.JOY] > 0:
@@ -89,7 +89,7 @@ func refresh_levels():
 func set_timer_action(action : int):
 	.set_timer_action(action)
 	if action == Constants.ActionType.DRINK:
-		timer_actions[action] *= 1 - (0.1 * levels[Constants.EMOTION.SORROW])
+		timer_actions[action] *= 1 - (0.25 * levels[Constants.EMOTION.SORROW])
 
 func advance_timers(delta):
 	.advance_timers(delta)
@@ -160,8 +160,9 @@ func process_unit(delta, time_elapsed : float):
 	for remove_index in lost_phantom_indices_to_remove:
 		var lost_phantom = lost_phantoms[remove_index]
 		lost_phantom.queue_free()
-	lost_phantoms = new_lost_phantoms
-	lost_phantoms_speeds = new_lost_phantoms_speeds
+	if lost_phantoms.size() != new_lost_phantoms.size():
+		lost_phantoms = new_lost_phantoms
+		lost_phantoms_speeds = new_lost_phantoms_speeds
 
 func handle_input(delta):
 	scene.handle_player_input()
@@ -223,7 +224,7 @@ func execute_actions(delta):
 func dash():
 	set_unit_condition(Constants.UnitCondition.MOVING_STATUS, Constants.UnitMovingStatus.DASHING)
 	target_move_speed = Constants.UNIT_TYPE_DASH_SPEEDS[unit_type]
-	target_move_speed *= 1 + (.1 * levels[Constants.EMOTION.JOY])
+	target_move_speed *= 1 + (.25 * levels[Constants.EMOTION.JOY])
 	if unit_conditions[Constants.UnitCondition.IS_ON_GROUND]:
 		set_sprite("Dash")
 

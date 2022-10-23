@@ -10,6 +10,9 @@ class_name GameScene
 
 export var tile_set_name: String
 export var level_name: String
+export(Array, String) var tilemaps_to_scale
+export(Array, String) var tilemaps_to_parallax_scroll
+export(Array, float) var parallax_scroll_factors = []
 const Constants = preload("res://Scripts/Constants.gd")
 const Unit = preload("res://Scripts/Unit.gd")
 const GreenWallFrag1 = preload("res://Objects/GreenWallFrag1.tscn")
@@ -69,6 +72,12 @@ func _ready():
 	player_cam = player.get_node("Camera2D")
 	player_cam.make_current()
 	
+	for tilemap_to_scale in tilemaps_to_scale:
+		if has_node(tilemap_to_scale):
+			var this_tilemap_to_scale = get_node(tilemap_to_scale)
+			this_tilemap_to_scale.scale.x = Constants.SCALE_FACTOR
+			this_tilemap_to_scale.scale.y = Constants.SCALE_FACTOR
+	
 	var youmu = get_node("Youmu")
 	units.append(youmu)
 	youmu.init_unit_w_scene(self)
@@ -107,6 +116,12 @@ func _process(delta):
 	time_elapsed = time_elapsed + delta
 	
 	# visual effects
+	for i in range(tilemaps_to_parallax_scroll.size()):
+		if has_node(tilemaps_to_parallax_scroll[i]):
+			var this_tilemap_to_parallax_scroll = get_node(tilemaps_to_parallax_scroll[i])
+			this_tilemap_to_parallax_scroll.position.x = player_cam.get_camera_screen_center().x - player_cam.get_camera_screen_center().x * parallax_scroll_factors[i]
+			this_tilemap_to_parallax_scroll.position.y = player_cam.get_camera_screen_center().y - player_cam.get_camera_screen_center().y * parallax_scroll_factors[i]
+	
 	if (player.facing == Constants.Direction.RIGHT):
 		player_cam.offset_h = 1
 	else:
@@ -131,7 +146,7 @@ func _process(delta):
 					else:
 						get_node("CanvasLayer/HUD/MessageBox").npc_control = "EnoughPleasure"
 						npc_datum[3] = true
-						for i in range(20):
+						for i in range(30):
 							player.gain_phantom(Constants.EMOTION.JOY)
 				get_node("CanvasLayer/HUD/MessageBox").start_sequence(npc_datum[2])
 
@@ -263,8 +278,9 @@ func process_wall_frags(delta):
 	for remove_index in wall_frag_indices_to_remove:
 		var wall_frag = wall_frags[remove_index]
 		wall_frag.queue_free()
-	wall_frags = new_wall_frags
-	wall_frags_speeds = new_wall_frags_speeds
+	if wall_frags.size() != new_wall_frags.size():
+		wall_frags = new_wall_frags
+		wall_frags_speeds = new_wall_frags_speeds
 
 func process_ui():
 	var emotion_index = int(floor(time_elapsed / 2)) % 4

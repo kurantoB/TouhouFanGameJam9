@@ -44,8 +44,8 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Touhou Fan Game Jam 9"
-run/main_scene="res://Scenes/Hakugyokurou.tscn"
+config/name="Ghastly Huddle of Sensational Thrills"
+run/main_scene="res://Scenes/Intro.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -103,4 +103,5 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 2d/snapping/use_gpu_pixel_snap=true
+environment/default_clear_color=Color( 0.117647, 0.113725, 0.223529, 1 )
 environment/default_environment="res://default_env.tres"
