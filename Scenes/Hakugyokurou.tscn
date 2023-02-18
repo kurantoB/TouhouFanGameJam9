@@ -107,9 +107,9 @@ script = ExtResource( 23 )
 unit_type = 2
 tick_duration = 0.6
 action_sequence_map = {
+[ [ 1 ], [ 0.0 ] ]: 1,
 [ [ 2, 0, 1 ], [ 0.0, 0.1, 0.6 ] ]: 2,
-[ [ 1, 0, 1 ], [ 0.0, 0.1, 1.0 ] ]: 1,
-[ [ 1 ], [ 0.0 ] ]: 1
+[ [ 1, 0, 1 ], [ 0.0, 0.1, 1.0 ] ]: 1
 }
 action_duration_map = {
 0: 0.5,
